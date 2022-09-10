@@ -1,0 +1,14 @@
+{
+  "type": "code",
+  "name": "vsmastery",
+  "modid": "vsmastery",
+  "version": "0.0.1",
+  
+  "description" : "Vintage Story Mod for realistic mastery of skills and professions",
+  "website": "https://github.com/islasa1/vsmastery",
+  "authors": [ "islasa1" ],
+  
+  "dependencies": {
+    "game": "1.16.5"
+  }
+}
