@@ -1,0 +1,50 @@
+[
+  { 
+    "file" : "game:entities/humanoid/player.json",
+    "op"   : "add",
+    "path" : "/server/behavior/-",
+    "value" :
+    {
+      "code"   : "vsmasteryskills",
+      "config" :
+      {
+        // @ max points per skill you achieve 1
+        // This makes the base coefficient linear, but the learning curve hyperbolic
+        "defaultPoints" : 10000.00,
+        // Will want to put appropriate mapping in lang/
+        // "titles" : [ "Novice", "Apprentice", "Journey", "Professional", "Expert", "Master" ],
+      }
+      
+      // These will be calculated as dist( avg + lvl * avgcoef, ( var + lvl * varcoef ) * sqrt(lvl) )  for the given skill
+      // where lvl is the hyperbolic relative level of the player (function cannot be changed)
+      // This will create a moving distribution with a hyperbolic curve and tapering variance as one gets better at a certain skill
+      "category" :
+      {
+
+        "mining" :
+        [
+          // Affects how often you get full stones, this will be a percentage chance applied
+          // each time a user breaks a qualified relievable rock
+          { 
+            "skillname" : "quarrymaster", 
+            "leveling"  : 
+            { 
+              // At max skill we should have a 20% +/- 1.0% * 1.0 chance of getting a relieved stone
+              // At mid skill we should have a 10% +/- 2.0% * 0.5 chance of getting a relieved stone
+              // At min skill we should have a  0% +/- 4.0% * 0.0 chance of getting a relieved stone              
+              "min"     : 0,
+              "max"     : 20,
+
+              "avgcoef" : 20,
+              "varcoef" : -4,
+              "base"    : { "avg" : 0, "var" : 4, "dist" : "narrowgaussian" } 
+            } 
+          },
+          { "skillname" : "quarrymaster" },
+          { "skillname" : "quarrymaster" },
+        ]
+      }
+    }
+
+  }
+]
