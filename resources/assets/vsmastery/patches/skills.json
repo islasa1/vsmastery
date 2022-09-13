@@ -6,11 +6,16 @@
     "value" :
     {
       "code"   : "vsmasteryskills",
-      "config" :
+      "defaults" :
       {
         // @ max points per skill you achieve 1
         // This makes the base coefficient linear, but the learning curve hyperbolic
-        "defaultPoints" : 10000.00
+        "start"     :     0.00,
+        "max"       : 10000.00,
+        "primary"   :     5.00,
+        "secondary" :     2.50,
+        "misc"      :     1.00,
+        "maxmisc"   :    500.0
         // Will want to put appropriate mapping in lang/
         // "titles" : [ "Novice", "Apprentice", "Journey", "Professional", "Expert", "Master" ],
       },
