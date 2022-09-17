@@ -188,8 +188,8 @@ def main():
       if "leveling" in skill :
         newSkill.min_     = skill[ "leveling" ][ "min" ]
         newSkill.max_     = skill[ "leveling" ][ "max" ]
-        newSkill.avg_     = skill[ "leveling" ][ "base" ][ "avg" ]
-        newSkill.var_     = skill[ "leveling" ][ "base" ][ "var" ]
+        newSkill.avg_     = skill[ "leveling" ][ "avg" ]
+        newSkill.var_     = skill[ "leveling" ][ "var" ]
         newSkill.avgcoef_ = skill[ "leveling" ][ "avgcoef" ]
         newSkill.varcoef_ = skill[ "leveling" ][ "varcoef" ]
 
