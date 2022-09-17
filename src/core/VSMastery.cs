@@ -28,6 +28,9 @@ public class VSMastery : Vintagestory.API.Common.ModSystem
   public override void Start( ICoreAPI api )
   {
     api_ = api;
+
+    api.RegisterEntityBehaviorClass( BehaviorSkills.BEHAVIOR, typeof( BehaviorSkills ) );
+
   }
 
 
