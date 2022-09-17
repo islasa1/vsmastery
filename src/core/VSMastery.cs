@@ -2,6 +2,12 @@ using Vintagestory.API.Client;
 using Vintagestory.API.Server;
 using Vintagestory.API.Common;
 
+
+[assembly: ModInfo( "vsmastery",
+	Description = "TBD",
+	Website     = "https://github.com/islasa1/vsmastery",
+	Authors     = new []{ "islasa1" } )]
+
 namespace vsmastery
 {
 
