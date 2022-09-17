@@ -2,72 +2,69 @@
   { 
     "file" : "game:entities/humanoid/player.json",
     "op"   : "add",
-    "path" : "/server/behavior/-",
+    "path" : "/server/behaviors/-",
     "value" :
     {
       "code"   : "vsmasteryskills",
       "defaults" :
       {
-        // @ max points per skill you achieve 1
-        // This makes the base coefficient linear, but the learning curve hyperbolic
-        "start"     :     0.00,
+        "exp"       :     0.00,
         "max"       : 10000.00,
         "primary"   :     5.00,
         "secondary" :     2.50,
         "misc"      :     1.00,
         "maxmisc"   :    500.0
-        // Will want to put appropriate mapping in lang/
-        // "titles" : [ "Novice", "Apprentice", "Journey", "Professional", "Expert", "Master" ],
       },
       
-      // These will be calculated as dist( avg + lvl * avgcoef, ( var + lvl * varcoef ) * sqrt(lvl) )  for the given skill
-      // where lvl is the hyperbolic relative level of the player (function cannot be changed)
-      // This will create a moving distribution with a hyperbolic curve and tapering variance as one gets better at a certain skill
-      "category" :
+      "skills" :
       {
 
         "mining" :
         [
-          // Affects how often you get full stones, this will be a percentage chance applied
-          // each time a user breaks a qualified relievable rock
+      
           { 
             "skillname" : "quarrymaster", 
-            "leveling"  : 
+            "factor"  : 
             { 
-              // At max skill we should have a ~20% chance of getting a relieved stone
               "min"     : 0,
               "max"     : 20,
 
               "avgcoef" : 20,
               "varcoef" : -4,
-              "base"    : { "avg" : 0, "var" : 4, "dist" : "narrowgaussian" } 
+
+              "avg"     :  0,
+              "var"     : 4,
+              "dist" : "narrowgaussian"
             } 
           },
           { 
             "skillname" : "oreminer",
-            "leveling"  : 
+            "factor"  : 
             { 
-              // At max skill we should have a ~5% chance of getting a crystallized version
               "min"     : 0,
               "max"     : 5.5,
 
               "avgcoef" : 5,
               "varcoef" : -1.25,
-              "base"    : { "avg" : 0, "var" : 1.55, "dist" : "narrowgaussian" } 
+
+              "avg"     :  0,
+              "var"     : 1.55,
+              "dist" : "narrowgaussian"
             } 
           },
           { 
             "skillname" : "oreblaster",
-            "leveling"  : 
+            "factor"  : 
             { 
-              // At max skill we should have a +8% chance of getting items
-              // todo figure this out
               "min"     : 0,
               "max"     : 5.5,
 
               "avgcoef" : 5,
               "varcoef" : -1.25,
-              "base"    : { "avg" : 0, "var" : 1.55, "dist" : "narrowgaussian" } 
+
+              "avg"     :  0,
+              "var"     : 1.55,
+              "dist" : "narrowgaussian"
             }
           }
         ],
@@ -75,41 +72,47 @@
         [
           { 
             "skillname" : "weaponsmith",
-            "leveling"  : 
+            "factor"  : 
             { 
-              // At max skill we should have a ~1.75 modifier, for durability it will mult (+1=>2.75), for dmg add
               "min"     : -0.75,
               "max"     : 3,
 
               "avgcoef" : 2.10,
               "varcoef" : -0.42,
-              "base"    : { "avg" : -0.35, "var" : 0.5, "dist" : "narrowgaussian" } 
+
+              "avg"     : -0.35,
+              "var"     : 0.5,
+              "dist" : "narrowgaussian"
             }
           },
           { 
             "skillname" : "armorsmith",
-            "leveling"  : 
+            "factor"  : 
             { 
-              // At max skill we should have a ~2.00 modifier, for durability it will mult (+1=>3.0), for dmg add
               "min"     : -0.75,
               "max"     : 2.25,
 
               "avgcoef" : 2.35,
               "varcoef" : -0.42,
-              "base"    : { "avg" : -0.35, "var" : 0.5, "dist" : "narrowgaussian" } 
+
+              "avg"     : -0.35,
+              "var"     : 0.5,
+              "dist" : "narrowgaussian"
             }
           },
           { 
             "skillname" : "toolsmith",
-            "leveling"  : 
+            "factor"  : 
             { 
-              // At max skill we should have a ~2.00 modifier, for durability it will mult (+1=>3.0), for dmg add
               "min"     : -0.75,
               "max"     : 2.25,
 
               "avgcoef" : 2.35,
               "varcoef" : -0.42,
-              "base"    : { "avg" : -0.35, "var" : 0.5, "dist" : "narrowgaussian" } 
+
+              "avg"     : -0.35,
+              "var"     : 0.5,
+              "dist" : "narrowgaussian"
             }
           }
         ],
@@ -117,41 +120,47 @@
         [
           { 
             "skillname" : "archer",
-            "leveling"  : 
+            "factor"  : 
             { 
-              // At max skill we deal an extra ~3 pts of damage (this makes skill play a large role vs % tool tier dmg)
               "min"     : -1.0,
               "max"     : 3.5,
 
               "avgcoef" : 3.50,
               "varcoef" : -0.68,
-              "base"    : { "avg" : -0.5, "var" : 0.75, "dist" : "narrowgaussian" } 
+
+              "avg"     : -0.5,
+              "var"     : 0.75,
+              "dist" : "narrowgaussian"
             }
           },
           { 
             "skillname" : "warrior",
-            "leveling"  : 
+            "factor"  : 
             { 
-              // At max skill we deal an extra ~3 pts of damage (this makes skill play a large role vs % tool tier dmg)
               "min"     : -1.0,
               "max"     : 3.5,
 
               "avgcoef" : 3.50,
               "varcoef" : -0.68,
-              "base"    : { "avg" : -0.5, "var" : 0.75, "dist" : "narrowgaussian" } 
+
+              "avg"     : -0.5,
+              "var"     : 0.75,
+              "dist" : "narrowgaussian"
             }
           },
           { 
             "skillname" : "lancer",
-            "leveling"  : 
+            "factor"  : 
             { 
-              // At max skill we deal an extra ~3 pts of damage (this makes skill play a large role vs % tool tier dmg)
               "min"     : -1.0,
               "max"     : 3.5,
 
               "avgcoef" : 3.50,
               "varcoef" : -0.68,
-              "base"    : { "avg" : -0.5, "var" : 0.75, "dist" : "narrowgaussian" } 
+
+              "avg"     : -0.5,
+              "var"     : 0.75,
+              "dist" : "narrowgaussian"
             }
           }
         ]
