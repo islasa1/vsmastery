@@ -37,7 +37,10 @@
   </ItemGroup>
   
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <None Include="modinfo.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="modinfo.json" CopyToOutputDirectory="PreserveNewest">
+      <!-- <Link>assets/%(Filename)%(Extension)</Link> -->
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="LICENSE" CopyToOutputDirectory="PreserveNewest" />
     <None Include="resources/**">
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
@@ -55,7 +58,8 @@
     </None>
   </ItemGroup>
   
-  <Target Name="Package" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
+  <Target Name="Package" AfterTargets="PostBuildEvent" > 
+  <!-- Condition="'$(Configuration)' == 'Release'"> -->
     <ZipDirectory DestinationFile="bin/$(TargetName).zip" SourceDirectory="$(TargetDir)" Overwrite="true" />
   </Target>
 </Project>
