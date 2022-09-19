@@ -69,7 +69,13 @@ public class BehaviorSkills : EntityBehavior
     // This immediately should mirror what we have in the config/player json patch, we will need to fill out defaults though
     skillTree_.MergeTree( typeAttributes[ "skills" ].ToAttribute() as ITreeAttribute );
     //------------------------------------------------------------------------
+    loadSkills( );
 
+  }
+
+  public void loadSkills( )
+  {
+    
     if ( skillTree_ != null )
     {
       
@@ -100,7 +106,6 @@ public class BehaviorSkills : EntityBehavior
       }
       
     }
-
   }
 
   // I think typeAttributes is the rest of the json that can be packed with a behavior
@@ -115,14 +120,19 @@ public class BehaviorSkills : EntityBehavior
     {
 
       entity.WatchedAttributes.SetAttribute( BEHAVIOR, skillTree_ = new TreeAttribute() );
+
+      // Start pulling out all the info
+      parseSkills( typeAttributes );
     
     }
-
-    // Start pulling out all the info
-    parseSkills( typeAttributes );
+    else
+    {
+      // Load up our skills from the WatchedAttributes
+      loadSkills( );
+    }
 
     // FOR TESTING PURPOSES
-    listenerId = entity.World.RegisterGameTickListener( testUpdate, 1000 );
+    listenerId = entity.World.RegisterGameTickListener( testUpdate, 5000 );
 
   }
 
