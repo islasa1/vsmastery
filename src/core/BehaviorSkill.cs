@@ -152,6 +152,7 @@ public class BehaviorSkills : EntityBehavior
   // CORE BEHAVIOR 
   private void testUpdate( float dt )
   {
+    System.Console.WriteLine( VSMastery.MODLOG + "Adding skillpoint!" );
     addSkillPoint( "mining", "oreminer", Skill.SkillPoint.PRIMARY );
   }
 
