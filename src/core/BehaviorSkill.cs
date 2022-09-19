@@ -30,23 +30,28 @@ public class BehaviorSkills : EntityBehavior
 
   void addSkillPoint( string category, string skill, Skill.SkillPoint pointType )
   {
-    TreeArrayAttribute categoryTree = ( skillTree_[ category ] as TreeArrayAttribute );
-    if ( categoryTree != null )
+    if ( skillTree_.HasAttribute( category ) )
     {
-      // Grab the first skill that has this skillname, these *should* be unique
-      // The main reason I didn't opt for a dictionary of skillnames and instead did a list is preserve
-      // order in case I want them to be logically placed based on the entry
-      ITreeAttribute skillAttributes = categoryTree.value.First( 
-                                                                tree => 
-                                                                  tree.HasAttribute( "skillname" ) && tree.GetString( "skillname" ) == skill  
-                                                                  );
-      if ( skillAttributes != null )
+      TreeArrayAttribute categoryTree = ( skillTree_[ category ] as TreeArrayAttribute );
+      if ( categoryTree != null )
       {
-        // By time we call this a skill should be fully defined
-        skillAttributes.SetFloat( "exp", skillAttributes.GetFloat( "exp" ) + skillAttributes.GetFloat( pointType.ToString().ToLower() ) );
-        // Update skills
-        skills_[ category ][ skill ].exp_ = skillAttributes.GetFloat( "exp" );
-        entity.WatchedAttributes.MarkPathDirty( BEHAVIOR );
+        // Grab the first skill that has this skillname, these *should* be unique
+        // The main reason I didn't opt for a dictionary of skillnames and instead did a list is preserve
+        // order in case I want them to be logically placed based on the entry
+        ITreeAttribute skillAttributes = categoryTree.value.First( 
+                                                                  tree => 
+                                                                    tree.HasAttribute( "skillname" ) && tree.GetString( "skillname" ) == skill  
+                                                                    );
+        if ( skillAttributes != null )
+        {
+          System.Console.WriteLine( VSMastery.MODLOG + "Skill found and added point " + pointType.ToString() );
+
+          // By time we call this a skill should be fully defined
+          skillAttributes.SetFloat( "exp", skillAttributes.GetFloat( "exp" ) + skillAttributes.GetFloat( pointType.ToString().ToLower() ) );
+          // Update skills
+          skills_[ category ][ skill ].exp_ = skillAttributes.GetFloat( "exp" );
+          entity.WatchedAttributes.MarkPathDirty( BEHAVIOR );
+        }
       }
     }
   }
