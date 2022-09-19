@@ -2,7 +2,6 @@ using Vintagestory.API.Client;
 using Vintagestory.API.Server;
 using Vintagestory.API.Common;
 
-
 [assembly: ModInfo( "vsmastery",
 	Description = "TBD",
 	Website     = "https://github.com/islasa1/vsmastery",
@@ -23,6 +22,10 @@ public class VSMastery : Vintagestory.API.Common.ModSystem
 
   // The core API
   Vintagestory.API.Common.ICoreAPI       api_;
+
+  public static string MOD_ID = "vsmastery";
+  public static string MODLOG = "[VSMASTERY] ";
+
 
   // Start our core API
   public override void Start( ICoreAPI api )
