@@ -1,0 +1,28 @@
+{
+   
+  "main-title"        : "Mastery",
+  "main-desc"         : "A list of skills you can accumulate and grow throughout your adventures! Hit the toggle to turn off the skill feature.",
+  "skills-title"      : "Skills",
+
+  "categ-mining"       : "Mining",
+  
+  "skill-quarrymaster" : "Quarrymaster",
+  "skill-oreminer"     : "Oreminer",
+  "skill-oreblaster"   : "Oreblaster",
+
+  "skill-quarrymaster-desc" : "How skilled you are at relieving stones",
+  "skill-oreminer-desc"     : "Whenever you mine ores and minerals",
+  "skill-oreblaster-desc"   : "Knowing just where to place the bomb ;)",
+
+  "categ-metalsmithing": "Metalsmithing",
+  
+  "skill-weaponsmith"  : "Weaponsmith",
+  "skill-armorsmith"   : "Armorsmith",
+  "skill-toolsmith"    : "Toolsmith",
+
+  "categ-combat"       : "Combat",
+
+  "skill-archer"       : "Archer",
+  "skill-warrior"      : "Warrior",
+  "skill-lancer"       : "Lancer"
+}
