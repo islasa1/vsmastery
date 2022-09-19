@@ -30,23 +30,28 @@ public class BehaviorSkills : EntityBehavior
 
   void addSkillPoint( string category, string skill, Skill.SkillPoint pointType )
   {
-    TreeArrayAttribute categoryTree = ( skillTree_[ category ] as TreeArrayAttribute );
-    if ( categoryTree != null )
+    if ( skillTree_.HasAttribute( category ) )
     {
-      // Grab the first skill that has this skillname, these *should* be unique
-      // The main reason I didn't opt for a dictionary of skillnames and instead did a list is preserve
-      // order in case I want them to be logically placed based on the entry
-      ITreeAttribute skillAttributes = categoryTree.value.First( 
-                                                                tree => 
-                                                                  tree.HasAttribute( "skillname" ) && tree.GetString( "skillname" ) == skill  
-                                                                  );
-      if ( skillAttributes != null )
+      TreeArrayAttribute categoryTree = ( skillTree_[ category ] as TreeArrayAttribute );
+      if ( categoryTree != null )
       {
-        // By time we call this a skill should be fully defined
-        skillAttributes.SetFloat( "exp", skillAttributes.GetFloat( "exp" ) + skillAttributes.GetFloat( pointType.ToString().ToLower() ) );
-        // Update skills
-        skills_[ category ][ skill ].exp_ = skillAttributes.GetFloat( "exp" );
-        entity.WatchedAttributes.MarkPathDirty( BEHAVIOR );
+        // Grab the first skill that has this skillname, these *should* be unique
+        // The main reason I didn't opt for a dictionary of skillnames and instead did a list is preserve
+        // order in case I want them to be logically placed based on the entry
+        ITreeAttribute skillAttributes = categoryTree.value.First( 
+                                                                  tree => 
+                                                                    tree.HasAttribute( "skillname" ) && tree.GetString( "skillname" ) == skill  
+                                                                    );
+        if ( skillAttributes != null )
+        {
+          System.Console.WriteLine( VSMastery.MODLOG + "Skill found and added point " + pointType.ToString() );
+
+          // By time we call this a skill should be fully defined
+          skillAttributes.SetFloat( "exp", skillAttributes.GetFloat( "exp" ) + skillAttributes.GetFloat( pointType.ToString().ToLower() ) );
+          // Update skills
+          skills_[ category ][ skill ].exp_ = skillAttributes.GetFloat( "exp" );
+          entity.WatchedAttributes.MarkPathDirty( BEHAVIOR );
+        }
       }
     }
   }
@@ -64,7 +69,13 @@ public class BehaviorSkills : EntityBehavior
     // This immediately should mirror what we have in the config/player json patch, we will need to fill out defaults though
     skillTree_.MergeTree( typeAttributes[ "skills" ].ToAttribute() as ITreeAttribute );
     //------------------------------------------------------------------------
+    loadSkills( );
 
+  }
+
+  public void loadSkills( )
+  {
+    
     if ( skillTree_ != null )
     {
       
@@ -95,7 +106,6 @@ public class BehaviorSkills : EntityBehavior
       }
       
     }
-
   }
 
   // I think typeAttributes is the rest of the json that can be packed with a behavior
@@ -110,14 +120,19 @@ public class BehaviorSkills : EntityBehavior
     {
 
       entity.WatchedAttributes.SetAttribute( BEHAVIOR, skillTree_ = new TreeAttribute() );
+
+      // Start pulling out all the info
+      parseSkills( typeAttributes );
     
     }
-
-    // Start pulling out all the info
-    parseSkills( typeAttributes );
+    else
+    {
+      // Load up our skills from the WatchedAttributes
+      loadSkills( );
+    }
 
     // FOR TESTING PURPOSES
-    listenerId = entity.World.RegisterGameTickListener( testUpdate, 1000 );
+    listenerId = entity.World.RegisterGameTickListener( testUpdate, 5000 );
 
   }
 
@@ -137,6 +152,7 @@ public class BehaviorSkills : EntityBehavior
   // CORE BEHAVIOR 
   private void testUpdate( float dt )
   {
+    System.Console.WriteLine( VSMastery.MODLOG + "Adding skillpoint!" );
     addSkillPoint( "mining", "oreminer", Skill.SkillPoint.PRIMARY );
   }
 
