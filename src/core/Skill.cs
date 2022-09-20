@@ -24,7 +24,7 @@ public class Skill
   // Might not be used here
   // public static float LEVEL_STEP = 1.0 / 7.0;
 
-  public string skillname_;
+  public string skillname_ = null;
   public SkillFactor factor_ = new SkillFactor();
 
 
@@ -39,7 +39,7 @@ public class Skill
 
   public void readFromTree( ITreeAttribute skillAttributes, Skill defaultSkill )
   {
-    this.skillname_ = skillAttributes.GetString( "skillname" );
+    this.skillname_ = skillAttributes.GetString( "skillname" ) ?? defaultSkill.skillname_;
 
     this.exp_       = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "exp"       ) ?? defaultSkill.exp_;
     this.max_       = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "max"       ) ?? defaultSkill.max_;
@@ -82,9 +82,11 @@ public class Skill
     return factor_.calc( experienceLevel() );
   }
 
-  public TreeAttribute asTreeAttribute()
+  public TreeAttribute asTreeAttribute( bool getFactor = true )
   {
     TreeAttribute skillTree = new TreeAttribute();
+
+    skillTree.SetString( "skillname", skillname_ );
     
     skillTree.SetFloat( "exp",       exp_       );
     skillTree.SetFloat( "max",       max_       );
@@ -93,7 +95,10 @@ public class Skill
     skillTree.SetFloat( "misc",      misc_      );
     skillTree.SetFloat( "maxmisc",   maxmisc_   );
     
-    skillTree.SetAttribute( "factor", factor_.asTreeAttribute() );
+    if ( getFactor )
+    {
+      skillTree.SetAttribute( "factor", factor_.asTreeAttribute() );
+    }
 
     return skillTree;
 

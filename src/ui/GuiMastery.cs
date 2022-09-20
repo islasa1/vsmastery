@@ -23,7 +23,7 @@ public class GuiMastery : GuiDialog
   public GuiMastery( ICoreClientAPI capi ) : base( capi )
   {
     this.OnClosed += onClosed;
-    this.OnClosed += onOpened;
+    this.OnOpened += onOpened;
     
     composeSkillsGui();
 
@@ -173,8 +173,8 @@ public class GuiMastery : GuiDialog
         }      
 
         // Move down
-        leftColumnBounds  = leftColumnBounds.BelowCopy();
-        rightColumnBounds = rightColumnBounds.BelowCopy( 0, 12 );
+        leftColumnBounds  = leftColumnBounds .BelowCopy( 0, 16 );
+        rightColumnBounds = rightColumnBounds.BelowCopy( 0, 16 + 12 );
       }
     }
 

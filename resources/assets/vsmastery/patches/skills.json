@@ -26,14 +26,14 @@
             "skillname" : "quarrymaster", 
             "factor"  : 
             { 
-              "min"     : 0,
-              "max"     : 20,
+              "min"     :  0.0,
+              "max"     : 20.0,
 
-              "avgcoef" : 20,
-              "varcoef" : -4,
+              "avgcoef" : 20.0,
+              "varcoef" : -4.0,
 
-              "avg"     :  0,
-              "var"     : 4,
+              "avg"     : 0.0,
+              "var"     : 4.0,
               "dist" : "narrowgaussian"
             } 
           },
@@ -41,7 +41,7 @@
             "skillname" : "oreminer",
             "factor"  : 
             { 
-              "min"     : 0,
+              "min"     : 0.0,
               "max"     : 5.5,
 
               "avgcoef" : 5,
