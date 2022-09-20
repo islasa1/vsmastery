@@ -23,7 +23,7 @@ public class GuiMastery : GuiDialog
   public GuiMastery( ICoreClientAPI capi ) : base( capi )
   {
     this.OnClosed += onClosed;
-    this.OnClosed += onOpened;
+    this.OnOpened += onOpened;
     
     composeSkillsGui();
 
