@@ -3,6 +3,7 @@ using System.Linq;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Datastructures;
+using Vintagestory.API.MathTools;
 
 namespace vsmastery
 {
@@ -150,7 +151,7 @@ public class BehaviorSkills : EntityBehavior
     }
 
     // FOR TESTING PURPOSES
-    listenerId = entity.World.RegisterGameTickListener( testUpdate, 5000 );
+    // listenerId = entity.World.RegisterGameTickListener( testUpdate, 5000 );
 
   }
 
@@ -158,7 +159,7 @@ public class BehaviorSkills : EntityBehavior
   {
       base.OnEntityDespawn( despawn );
 
-      entity.World.UnregisterGameTickListener( listenerId );
+      // entity.World.UnregisterGameTickListener( listenerId );
   }
 
   public override string PropertyName()
@@ -166,8 +167,50 @@ public class BehaviorSkills : EntityBehavior
     return BEHAVIOR;
   }
 
+  public override void OnInteract( 
+                                  EntityAgent      byEntity,
+                                  ItemSlot         itemSlot,
+                                  Vec3d            hitPosition,
+                                  EnumInteractMode mode,
+                                  ref EnumHandling handled
+                                  )
+  {
+    
+  }
+
+  public override void DidAttack(
+                                  DamageSource     source, 
+                                  EntityAgent      targetEntity, 
+                                  ref EnumHandling handled 
+                                  )
+  {
+    if ( source.Source == EnumDamageSource. )
+  }
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // CORE BEHAVIOR 
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///
+  /// MINING
+  ///
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///
+  /// METALSMITHING
+  ///
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///
+  /// COMBAT
+  ///
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+
   private void testUpdate( float dt )
   {
     System.Console.WriteLine( VSMastery.MODLOG + "Adding skillpoint!" );
