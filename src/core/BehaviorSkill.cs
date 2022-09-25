@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Vintagestory.API.Server;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
+using Vintagestory.GameContent;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
@@ -26,7 +29,6 @@ public class BehaviorSkills : EntityBehavior
 
   public BehaviorSkills( Entity entity ) : base( entity )
   {
-
   }
 
   void addSkillPoint( string category, string skill, Skill.SkillPoint pointType )
@@ -167,28 +169,85 @@ public class BehaviorSkills : EntityBehavior
     return BEHAVIOR;
   }
 
-  public override void OnInteract( 
-                                  EntityAgent      byEntity,
-                                  ItemSlot         itemSlot,
-                                  Vec3d            hitPosition,
-                                  EnumInteractMode mode,
-                                  ref EnumHandling handled
-                                  )
-  {
-    
-  }
+  // public override void OnInteract( 
+  //                                 EntityAgent      byEntity,
+  //                                 ItemSlot         itemSlot,
+  //                                 Vec3d            hitPosition,
+  //                                 EnumInteractMode mode,
+  //                                 ref EnumHandling handled
+  //                                 )
+  // {
+  //   // Let's only accumulate on the server side?
+  //   if ( api_.Side == EnumAppSide.Server )
+  //   {
+  //     // Get the player on the server
+  //     // IServerPlayer splayer = ( byEntity as EntityPlayer )?.Player as IServerPlayer;
+      
+      
+  //     // Use the current interaction test
+  //     //////////////////////////////////////////////////////////////////////////
+  //     //
+  //     // Mining
+  //     if ( itemSlot.Itemstack.Collectible.Tool == EnumTool.Pickaxe  )
+  //     {
+  //       // Prospecting pickaxe
+  //       if ( itemSlot.Itemstack.Item is ItemProspectingPick )
+  //       {
 
-  public override void DidAttack(
-                                  DamageSource     source, 
-                                  EntityAgent      targetEntity, 
-                                  ref EnumHandling handled 
-                                  )
+  //       }
+  //       // Regular pickaxe
+  //       else
+  //       {
+
+  //       }
+  //     }
+  //     else if ( itemSlot.Itemstack.Collectible.Tool == EnumTool.Hammer )
+  //     {
+
+  //     }
+  //     else if ( itemSlot.Itemstack.Item is ItemHammer )
+  //     {
+
+  //     }
+  //     else if ( itemSlot.Itemstack.Item is ItemHammer )
+  //     {
+
+  //     }
+
+  //     // byEntity.Controls.HandUse == EnumHandInteract.HeldItemInteract
+
+  //   }
+  // }
+
+  // public override void DidAttack(
+  //                                 DamageSource     source,
+  //                                 EntityAgent      targetEntity, 
+  //                                 ref EnumHandling handled 
+  //                                 )
+  // {
+  //   if ( source.Source == EnumDamageSource. )
+  // }
+
+  public override void Notify( string key, object data )
   {
-    if ( source.Source == EnumDamageSource. )
+    if ( key == GridRecipePatch.NOTIFY_KEY && data is GridRecipe )
+    {
+      System.Console.WriteLine( VSMastery.MODLOG + "Recipe crafted!" );
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // CORE BEHAVIOR 
+
+  public void distributePoints( 
+                                string   sourceEvent, 
+                                EnumTool tool, 
+                                string   toolname
+                                )
+  {
+    
+  }
+
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ///
