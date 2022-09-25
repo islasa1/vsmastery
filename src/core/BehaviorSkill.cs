@@ -118,25 +118,7 @@ public class BehaviorSkills : EntityBehavior
           vsmastery.Skill sk = new Skill( skillsInCategory.value[skillIdx] as ITreeAttribute, defaultSkill_ );
 
           // Overwrite since we are now all good
-           skillsInCategory.value[ skillIdx ] = sk.asTreeAttribute();
-
-          //--------------------------------------------------------------------
-          // I could probably just re-assign instead of merging since I naturally
-          // since on creation
-          // Sync skills with attribute tree - work around merge trees manually
-          // as the current implementation is broken
-          // skill.MergeTree( sk.asTreeAttribute( false ) );
-          // // Merge
-          // if ( skill.HasAttribute( "factor" ) )
-          // {
-          //   ( skill[ "factor" ] as ITreeAttribute ).MergeTree( sk.factor_.asTreeAttribute() );
-          // }
-          // else
-          // {
-          //   skill[ "factor" ] = sk.factor_.asTreeAttribute();
-          // }
-          //--------------------------------------------------------------------
-
+          skillsInCategory.value[ skillIdx ] = sk.asTreeAttribute();
           
           // Add it to the category
           skills_[ category.Key ].Add( sk.skillname_, sk );
