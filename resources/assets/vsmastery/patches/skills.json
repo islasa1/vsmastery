@@ -13,7 +13,9 @@
         "primary"   :     5.00,
         "secondary" :     2.50,
         "misc"      :     1.00,
-        "maxmisc"   :    500.0
+
+        "maxmisc"      :    500.0,
+        "maxsecondary" :   2000.0
       },
       
       "skills" :
@@ -35,7 +37,11 @@
               "avg"     : 0.0,
               "var"     : 4.0,
               "dist" : "narrowgaussian"
-            } 
+            },
+            "points" :
+            {
+              "craft|forge|attack|kill|interact|break" : { "valid" : [ "itemname", "blockname" ], "type" : "pointType" }
+            }
           },
           { 
             "skillname" : "oreminer",
