@@ -204,8 +204,12 @@ public class GuiMastery : GuiDialog
           ITreeAttribute skill = skillValue as ITreeAttribute;
 
           Composers["main"].GetStatbar( skill.GetString( "skillname" ) ).SetLineInterval( skill.GetFloat( "max" ) / 10 );
-          Composers["main"].GetStatbar( skill.GetString( "skillname" ) ).SetValues      ( skill.GetFloat( "exp" ), 0, skill.GetFloat( "max" ) );
-
+          Composers["main"].GetStatbar( skill.GetString( "skillname" ) ).SetValues      ( 
+                                                                                          skill.GetFloat( "exp" )          + skill.GetFloat( "expprimary" ) +
+                                                                                          skill.GetFloat( "expsecondary" ) + skill.GetFloat( "expmisc" ),
+                                                                                          0,
+                                                                                          skill.GetFloat( "max" )
+                                                                                          );
         }
       }
     }
