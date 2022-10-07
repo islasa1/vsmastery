@@ -23,12 +23,14 @@ public class Skill
   public float expsecondary_ =     0.0f;
   public float expmisc_      =     0.0f;
 
-  public float max_        = 10000.0f;
+  public float max_          = 10000.0f;
+  
+  public float maxsecondary_ =  2000.0f;
+  public float maxmisc_      =   500.0f;
+
   public float primary_    =     5.0f;
   public float secondary_  =     2.5f;
   public float misc_       =     1.0f;
-  public float maxsecondary_ =  2000.0f;
-  public float maxmisc_      =   500.0f;
 
   // Might not be used here
   // public static float LEVEL_STEP = 1.0 / 7.0;
