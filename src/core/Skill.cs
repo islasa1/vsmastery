@@ -76,9 +76,38 @@ public class Skill
       this.factor_.readFromTree( factorTree, defaultSkill.factor_ );
     }
 
-    ITreeAttribute factorTree = skillAttributes.GetTreeAttribute( "points" );
-    if ( factorTree != null )
+    ITreeAttribute pointsTree = skillAttributes.GetTreeAttribute( "points" );
+    if ( pointsTree != null )
+    {
+      
+    }
 
+  }
+
+  public float getPointValue( string pointType )
+  {
+    // enum parsing
+    SkillPoint point;
+    bool parsed = System.Enum.TryParse( pointType, out point );
+    if ( parsed )
+    {
+      return getPointValue( point );
+    }
+    else
+    { 
+      return 0.0f;
+    }
+  }
+
+  public float getPointValue( SkillPoint pointType )
+  {
+    switch ( pointType )
+    {
+      case SkillPoint.PRIMARY   : return this.primary_;
+      case SkillPoint.SECONDARY : return this.secondary_;
+      case SkillPoint.MISC      : return this.misc_;
+      default                   : return 0.0f;
+    }  
   }
 
   private float hyperbolic( float x )
