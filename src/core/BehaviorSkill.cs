@@ -14,8 +14,11 @@ namespace vsmastery
 public class BehaviorSkills : EntityBehavior
 {
   
-  // Our two reads on skills, skillTree is truth, though for the ease
-  // of not needing to constantly convert things we will keep skills up-to-date
+  // Our three reads on skills:
+  //    watchedExp is our entity attributes to watch
+  //    skillTree  is our behavior configuration
+  //    skills_    is synchronized to the two and for ease of calculations
+  ITreeAttribute watchedExp_;
   ITreeAttribute skillTree_;
   Dictionary< string, Dictionary<  string, Skill > > skills_;
 
@@ -34,46 +37,45 @@ public class BehaviorSkills : EntityBehavior
 
   void addSkillPoint( string category, string skill, Skill.SkillPoint pointType )
   {
-    if ( skillTree_.HasAttribute( category ) )
+  
+    ITreeAttribute categoryTree = ( watchedExp_[ category ] as ITreeAttribute );
+    if ( categoryTree != null )
     {
-      TreeArrayAttribute categoryTree = ( skillTree_[ category ] as TreeArrayAttribute );
-      if ( categoryTree != null )
+      // Grab the skill 
+      ITreeAttribute skillAttributes = categoryTree[ skill ] as ITreeAttribute;
+      
+      if ( skillAttributes != null )
       {
-        // Grab the first skill that has this skillname, these *should* be unique
-        // The main reason I didn't opt for a dictionary of skillnames and instead did a list is preserve
-        // order in case I want them to be logically placed based on the entry
-        ITreeAttribute skillAttributes = categoryTree.value.First( 
-                                                                  tree => 
-                                                                    tree.HasAttribute( "skillname" ) && tree.GetString( "skillname" ) == skill  
-                                                                    );
-        if ( skillAttributes != null )
+        System.Console.WriteLine( VSMastery.MODLOG + "Skill found and added point " + pointType.ToString() );
+
+        // By time we call this a skill should be fully defined
+        float? cap = null;
+        if ( ( pointType == Skill.SkillPoint.SECONDARY ) || ( pointType == Skill.SkillPoint.MISC ) )
         {
-          System.Console.WriteLine( VSMastery.MODLOG + "Skill found and added point " + pointType.ToString() );
-
-          // By time we call this a skill should be fully defined
-          float? cap = null;
-          if ( ( pointType == Skill.SkillPoint.SECONDARY ) || ( pointType == Skill.SkillPoint.MISC ) )
-          {
-            cap = skillAttributes.GetFloat( "max" + pointType.ToString().ToLower() );
-          }
-
-          float points    = skillAttributes.GetFloat( pointType.ToString().ToLower() );
-          float updateExp = skillAttributes.GetFloat( "exp" + pointType.ToString().ToLower() ) + points;
-
-          if ( cap != null )
-          {
-            updateExp = System.Math.Max( (float)cap, updateExp );
-            if ( updateExp == cap )
-            {
-              System.Console.WriteLine( VSMastery.MODLOG + "Max experience reached for : " + skill );
-            }
-          }
-
-          // Check final exp?
-          skillAttributes.SetFloat( "exp" + pointType.ToString().ToLower(),  updateExp );
-
-          entity.WatchedAttributes.MarkPathDirty( BEHAVIOR );
+          cap = skillAttributes.GetFloat( "max" + pointType.ToString().ToLower() );
         }
+
+        // Pull directly from skills_ in this case
+        float points    = skills_[ category ][ skill ].getPointValue( pointType );
+
+        // Source original exp to get new
+        float updateExp = skillAttributes.GetFloat( "exp" + pointType.ToString().ToLower() ) + points;
+
+        if ( cap != null )
+        {
+          updateExp = System.Math.Max( (float)cap, updateExp );
+          if ( updateExp == cap )
+          {
+            System.Console.WriteLine( VSMastery.MODLOG + "Max experience reached for : " + skill );
+          }
+        }
+
+        // Check final exp?
+
+        // Set the experience to the watched exp
+        skillAttributes.SetFloat( "exp" + pointType.ToString().ToLower(), updateExp );
+
+        entity.WatchedAttributes.MarkPathDirty( BEHAVIOR );
       }
     }
   }
@@ -87,7 +89,7 @@ public class BehaviorSkills : EntityBehavior
     /// \todo This can be done once at the beginning of the start of the client....
     //------------------------------------------------------------------------
     // First get the defaults
-    defaultSkill_ = new Skill( typeAttributes[ "defaults" ].ToAttribute() as ITreeAttribute, defaultSkill_ );
+    defaultSkill_ = new Skill( "default", typeAttributes[ "defaults" ].ToAttribute() as ITreeAttribute, defaultSkill_ );
     // This immediately should mirror what we have in the config/player json patch, we will need to fill out defaults though
     skillTree_.MergeTree( typeAttributes[ "skills" ].ToAttribute() as ITreeAttribute );
     //------------------------------------------------------------------------
