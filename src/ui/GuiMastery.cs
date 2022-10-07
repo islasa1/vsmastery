@@ -109,26 +109,26 @@ public class GuiMastery : GuiDialog
                             leftColumnBounds.WithFixedWidth(180)
                             );
 
-        TreeArrayAttribute skillsInCategory = category.Value as TreeArrayAttribute;
+        
         bool firstBar = true;
 
         // Get all our skills
-        foreach ( IAttribute skillValue in skillsInCategory.value )
+        foreach ( KeyValuePair< string, IAttribute > skillValue in category.Value as ITreeAttribute )
         {
           
-          ITreeAttribute skill = skillValue as ITreeAttribute;
-          string skillDesc = Lang.Get( VSMastery.MOD_ID + ":skill-" + skill.GetString( "skillname" ) + SKILL_DESC_SUFFIX );
+          ITreeAttribute skill = skillValue.Value as ITreeAttribute;
+          string skillDesc = Lang.Get( VSMastery.MOD_ID + ":skill-" + skillValue.Key + SKILL_DESC_SUFFIX );
 
           Composers["main"]
             // Now add our stats with a smaller font
             .AddButton( 
-                        Lang.Get( VSMastery.MOD_ID + ":skill-" + skill.GetString( "skillname"  ) ),
+                        Lang.Get( VSMastery.MOD_ID + ":skill-" + skillValue.Key ),
                         () => 
                           { 
-                            if ( selectedSkill == null || selectedSkill != skill.GetString( "skillname" ) )
+                            if ( selectedSkill == null || selectedSkill != skillValue.Key )
                             { 
                               Composers["main"].GetDynamicText( SKILL_DESC ).SetNewText( skillDesc );
-                              selectedSkill = skill.GetString( "skillname" );
+                              selectedSkill = skillValue.Key;
                             }
                             else
                             {
@@ -140,10 +140,10 @@ public class GuiMastery : GuiDialog
                         leftColumnBounds = leftColumnBounds.BelowCopy( 0, firstBar ? 4 : 0 ).WithFixedWidth(90), 
                         CairoFont.WhiteDetailText().WithLineHeightMultiplier( 0.9 ), EnumButtonStyle.MainMenu, 
                         EnumTextOrientation.Left, 
-                        skill.GetString( "skillname"  ) + SKILL_DESC_SUFFIX
+                        skillValue.Key + SKILL_DESC_SUFFIX
                         )
             // Now add the bar, the copy on the y offset is probably a hard-coded value to adjust lining up with the text lines
-            .AddStatbar(rightColumnBounds = rightColumnBounds.BelowCopy(0, firstBar ? 16 : 12 ), GuiStyle.FoodBarColor, skill.GetString( "skillname"  ) );
+            .AddStatbar(rightColumnBounds = rightColumnBounds.BelowCopy(0, firstBar ? 16 : 12 ), GuiStyle.FoodBarColor, skillValue.Key );
           
           // This isn't doing what I quite expect... It only does right and not right + Y level
           ElementBounds switchBounds = ElementBounds.Fixed( 0, rightColumnBounds.fixedY, 12, 12 ).FixedLeftOf( rightColumnBounds );
@@ -155,19 +155,19 @@ public class GuiMastery : GuiDialog
                           { 
                             if ( isOn )
                             { 
-                              System.Console.WriteLine( VSMastery.MODLOG + "Activating skill " + skill.GetString( "skillname" ) );
+                              System.Console.WriteLine( VSMastery.MODLOG + "Activating skill " + skillValue.Key );
                             }
                             else
                             {
-                              System.Console.WriteLine( VSMastery.MODLOG + "De-activating skill " + skill.GetString( "skillname" ) );
+                              System.Console.WriteLine( VSMastery.MODLOG + "De-activating skill " + skillValue.Key );
                             }
                           }, 
                         switchBounds,
-                        skill.GetString( "skillname" ) + "-toggle", 10, 2
+                        skillValue.Key + "-toggle", 10, 2
                       );
 
           // Turn on the skill - TBD replace with the previous state of the attribute
-          Composers[ "main" ].GetSwitch( skill.GetString( "skillname" ) + "-toggle" ).SetValue( true );
+          Composers[ "main" ].GetSwitch( skillValue.Key + "-toggle" ).SetValue( true );
 
           firstBar = false;
         }      
@@ -195,21 +195,19 @@ public class GuiMastery : GuiDialog
       foreach ( KeyValuePair< string, IAttribute > category in vsmastery )
       {
 
-        TreeArrayAttribute skillsInCategory = category.Value as TreeArrayAttribute;
-
         // Get all our skills
-        foreach ( IAttribute skillValue in skillsInCategory.value )
+        foreach ( KeyValuePair< string, IAttribute > skillValue in category.Value as TreeAttribute )
         {
 
-          ITreeAttribute skill = skillValue as ITreeAttribute;
+          ITreeAttribute skill = skillValue.Value as ITreeAttribute;
 
-          Composers["main"].GetStatbar( skill.GetString( "skillname" ) ).SetLineInterval( skill.GetFloat( "max" ) / 10 );
-          Composers["main"].GetStatbar( skill.GetString( "skillname" ) ).SetValues      ( 
-                                                                                          skill.GetFloat( "exp" )          + skill.GetFloat( "expprimary" ) +
-                                                                                          skill.GetFloat( "expsecondary" ) + skill.GetFloat( "expmisc" ),
-                                                                                          0,
-                                                                                          skill.GetFloat( "max" )
-                                                                                          );
+          Composers["main"].GetStatbar( skillValue.Key ).SetLineInterval( skill.GetFloat( "max" ) / 10 );
+          Composers["main"].GetStatbar( skillValue.Key ).SetValues      ( 
+                                                                          skill.GetFloat( "exp" )          + skill.GetFloat( "expprimary" ) +
+                                                                          skill.GetFloat( "expsecondary" ) + skill.GetFloat( "expmisc" ),
+                                                                          0,
+                                                                          skill.GetFloat( "max" )
+                                                                          );
         }
       }
     }
