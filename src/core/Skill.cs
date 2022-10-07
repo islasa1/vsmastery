@@ -140,18 +140,21 @@ public class Skill
   {
     TreeAttribute skillTree = new TreeAttribute();
 
-    skillTree.SetString( "skillname", skillname_ );
+    // skillTree.SetString( "skillname", skillname_ );
 
     skillTree.SetFloat( "exp",          exp_          );
     skillTree.SetFloat( "expprimary",   expprimary_   );
     skillTree.SetFloat( "expsecondary", expsecondary_ );
     skillTree.SetFloat( "expmisc",      expmisc_      );
+
     skillTree.SetFloat( "max",          max_          );
+    skillTree.SetFloat( "maxsecondary", maxsecondary_ );
+    skillTree.SetFloat( "maxmisc",      maxmisc_      );
+
     skillTree.SetFloat( "primary",      primary_      );
     skillTree.SetFloat( "secondary",    secondary_    );
     skillTree.SetFloat( "misc",         misc_         );
-    skillTree.SetFloat( "maxsecondary", maxsecondary_ );
-    skillTree.SetFloat( "maxmisc",      maxmisc_      );
+    
     
     if ( getFactor )
     {
