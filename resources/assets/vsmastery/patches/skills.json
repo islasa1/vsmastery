@@ -9,23 +9,25 @@
       "defaults" :
       {
         "exp"       :     0.00,
-        "max"       : 10000.00,
+
+        "max"          : 10000.00,
+        "maxmisc"      :    500.0,
+        "maxsecondary" :   2000.0,
+
         "primary"   :     5.00,
         "secondary" :     2.50,
-        "misc"      :     1.00,
-
-        "maxmisc"      :    500.0,
-        "maxsecondary" :   2000.0
+        "misc"      :     1.00
+        
       },
       
       "skills" :
       {
 
         "mining" :
-        [
+        {
       
+          "quarrymaster" : 
           { 
-            "skillname" : "quarrymaster", 
             "factor"  : 
             { 
               "min"     :  0.0,
@@ -43,8 +45,8 @@
               "craft|forge|attack|kill|interact|break" : { "valid" : [ "itemname", "blockname" ], "type" : "pointType" }
             }
           },
+          "oreminer" : 
           { 
-            "skillname" : "oreminer",
             "factor"  : 
             { 
               "min"     : 0.0,
@@ -58,8 +60,8 @@
               "dist" : "narrowgaussian"
             } 
           },
+          "oreblaster" : 
           { 
-            "skillname" : "oreblaster",
             "factor"  : 
             { 
               "min"     : 0,
@@ -73,11 +75,11 @@
               "dist" : "narrowgaussian"
             }
           }
-        ],
+        },
         "metalsmithing" :
-        [
+        {
+          "weaponsmith" : 
           { 
-            "skillname" : "weaponsmith",
             "factor"  : 
             { 
               "min"     : -0.75,
@@ -91,8 +93,8 @@
               "dist" : "narrowgaussian"
             }
           },
+          "armorsmith" : 
           { 
-            "skillname" : "armorsmith",
             "factor"  : 
             { 
               "min"     : -0.75,
@@ -106,8 +108,8 @@
               "dist" : "narrowgaussian"
             }
           },
+          "toolsmith" : 
           { 
-            "skillname" : "toolsmith",
             "factor"  : 
             { 
               "min"     : -0.75,
@@ -121,11 +123,11 @@
               "dist" : "narrowgaussian"
             }
           }
-        ],
+        },
         "combat" :
-        [
+        {
+          "archer" : 
           { 
-            "skillname" : "archer",
             "factor"  : 
             { 
               "min"     : -1.0,
@@ -139,8 +141,8 @@
               "dist" : "narrowgaussian"
             }
           },
+          "warrior" : 
           { 
-            "skillname" : "warrior",
             "factor"  : 
             { 
               "min"     : -1.0,
@@ -154,8 +156,8 @@
               "dist" : "narrowgaussian"
             }
           },
+          "lancer" : 
           { 
-            "skillname" : "lancer",
             "factor"  : 
             { 
               "min"     : -1.0,
@@ -169,7 +171,7 @@
               "dist" : "narrowgaussian"
             }
           }
-        ]
+        }
       }
     }
 
