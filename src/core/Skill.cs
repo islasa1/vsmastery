@@ -46,25 +46,29 @@ public class Skill
   public Skill( ) { }
 
   /// Parse from a tree
-  public Skill( ITreeAttribute skillAttributes, Skill defaultSkill )
+  public Skill( string skillname, ITreeAttribute skillAttributes, Skill defaultSkill )
   {
+    this.skillname_ = skillname;
     this.readFromTree( skillAttributes, defaultSkill );
   }
 
   public void readFromTree( ITreeAttribute skillAttributes, Skill defaultSkill )
   {
-    this.skillname_ = skillAttributes.GetString( "skillname" ) ?? defaultSkill.skillname_;
+    // this.skillname_ = skillAttributes.GetString( "skillname" ) ?? defaultSkill.skillname_;
 
     this.exp_          = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "exp"            ) ?? defaultSkill.exp_;
     this.expprimary_   = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "expprimary"     ) ?? defaultSkill.expprimary_;
     this.expsecondary_ = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "expsecondary"   ) ?? defaultSkill.expsecondary_;
     this.expmisc_      = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "expmisc"        ) ?? defaultSkill.expmisc_;
+    
     this.max_          = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "max"            ) ?? defaultSkill.max_;
+    this.maxsecondary_ = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "maxsecondary"   ) ?? defaultSkill.maxsecondary_;
+    this.maxmisc_      = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "maxmisc"        ) ?? defaultSkill.maxmisc_;
+
     this.primary_      = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "primary"        ) ?? defaultSkill.primary_;
     this.secondary_    = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "secondary"      ) ?? defaultSkill.secondary_;
     this.misc_         = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "misc"           ) ?? defaultSkill.misc_;
-    this.maxsecondary_ = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "maxsecondary"   ) ?? defaultSkill.maxsecondary_;
-    this.maxmisc_      = TreeAtributeExtractor.tryGetAsType< float >( skillAttributes, "maxmisc"        ) ?? defaultSkill.maxmisc_;
+    
 
     ITreeAttribute factorTree = skillAttributes.GetTreeAttribute( "factor" );
     if ( factorTree != null )
