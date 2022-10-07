@@ -110,21 +110,19 @@ public class BehaviorSkills : EntityBehavior
         // adding this category - throws if not unique
         skills_.Add( category.Key, new Dictionary<string, Skill>() );
 
-        TreeArrayAttribute skillsInCategory = category.Value as TreeArrayAttribute;
-        
-        // Get all our skills, do a traditional loop so we can overwrite
-        // foreach ( IAttribute skillValue in skillsInCategory.value )
-        for ( int skillIdx = 0; skillIdx < skillsInCategory.value.Count(); skillIdx++ )
+        foreach( KeyValuePair< string, IAttribute > skill in category.Value as TreeAttribute )
         {
           // Parse the skill using the server default as the fall back
-          vsmastery.Skill sk = new Skill( skillsInCategory.value[skillIdx] as ITreeAttribute, defaultSkill_ );
+          vsmastery.Skill sk = new Skill( skill.Key, skill.Value as ITreeAttribute, defaultSkill_ );
 
-          // Overwrite since we are now all good
-          skillsInCategory.value[ skillIdx ] = sk.asTreeAttribute();
+          // Manual merge, might be fixed in 1.17.5 - I don't want to write to an enumerable while looping
+          ( skill.Value as ITreeAttribute ).MergeTree( sk.asTreeAttribute( false ) );
+
+          // This one actually doesn't need to be a merge since we have the object
+          ( skill.Value as ITreeAttribute )["factor"] = sk.factor_.asTreeAttribute();
           
           // Add it to the category
           skills_[ category.Key ].Add( sk.skillname_, sk );
-
         }
 
       }
@@ -132,28 +130,116 @@ public class BehaviorSkills : EntityBehavior
     }
   }
 
+  public void syncSkillsExp()
+  {
+    // FOR NOW I'M JUST IGNORING THIS, skills will be truth
+    // // First delete all mismatched things
+    // foreach ( KeyValuePair< string, IAttribute > category in watchedExp_ )
+    // {
+    //   if ( !skills_.ContainsKey( category.Key ) )
+    //   {
+    //     System.Console.WriteLine( "{0}Category {1} is no longer tracked!", VSMastery.MODLOG, category.Key );
+        
+    //     continue;
+    //   }
+    //   foreach ( KeyValuePair< string, IAttribute > skillValue in category.Value as ITreeAttribute )
+    //   {
+    //     if ( !skills_[ category.Key ].ContainsKey( skillname ) )
+    //     {
+    //       System.Console.WriteLine( "{0}Skill {1} is no longer tracked!", VSMastery.MODLOG, skillname );
+    //       continue;
+    //     } 
+    //   }
+    // }
+
+    // First go through all exp from the watched attributes and fit into existing skills
+    foreach ( KeyValuePair< string, IAttribute > category in watchedExp_ )
+    {
+      if ( !skills_.ContainsKey( category.Key ) )
+      {
+        System.Console.WriteLine( "{0}Category {1} is no longer tracked!", VSMastery.MODLOG, category.Key );
+        continue;
+      } 
+      
+      foreach ( KeyValuePair< string, IAttribute > skillValue in category.Value as ITreeAttribute )
+      {
+      
+        if ( !skills_[ category.Key ].ContainsKey( skillValue.Key ) )
+        {
+          System.Console.WriteLine( "{0}Skill {1} is no longer tracked!", VSMastery.MODLOG, skillValue.Key );
+          continue;
+        } 
+
+        // Go to the respective skill and add to it - check if loaded to skills_
+        skills_[ category.Key ][ skillValue.Key ].exp_          = ( skillValue.Value as ITreeAttribute ).GetFloat( "exp"            );
+        skills_[ category.Key ][ skillValue.Key ].expprimary_   = ( skillValue.Value as ITreeAttribute ).GetFloat( "expprimary"     );
+        skills_[ category.Key ][ skillValue.Key ].expsecondary_ = ( skillValue.Value as ITreeAttribute ).GetFloat( "expsecondary"   );
+        skills_[ category.Key ][ skillValue.Key ].expmisc_      = ( skillValue.Value as ITreeAttribute ).GetFloat( "expmisc"        );
+        
+        // Even though we "watch" maxes, that will actually be coming from skill_
+
+      }
+    }
+
+    // Now sync skill_ into watchedExp
+    foreach ( KeyValuePair< string, Dictionary< string, Skill > > category in skills_ )
+    {
+      
+      if ( !watchedExp_.HasAttribute( category.Key ) )
+      {
+        System.Console.WriteLine( "{0}Category {1} added to watched experience", VSMastery.MODLOG, category.Key );
+        // Initialize it with the same size of skills we will add
+        watchedExp_[ category.Key ] = new TreeAttribute();
+      }
+     
+      // Get all our skills' exp
+      foreach ( KeyValuePair< string, Skill > skill in category.Value )
+      {
+
+        // Find if there is a skill in this category
+        if ( ! ( watchedExp_[ category.Key ] as ITreeAttribute ).HasAttribute( skill.Key ) )
+        {
+          System.Console.WriteLine( "{0}Skill {1} added to watched experience", VSMastery.MODLOG, skill.Key );
+          // Initialize it with the same size of skills we will add
+          ( watchedExp_[ category.Key ] as ITreeAttribute )[ skill.Key ] = new TreeAttribute();
+        }
+        
+        // We have not synced skills_ to this then
+        ( ( watchedExp_[ category.Key ] as ITreeAttribute )[ skill.Key ] as ITreeAttribute ).SetFloat( "exp",          skill.Value.exp_ );
+        ( ( watchedExp_[ category.Key ] as ITreeAttribute )[ skill.Key ] as ITreeAttribute ).SetFloat( "expprimary",   skill.Value.expprimary_ );
+        ( ( watchedExp_[ category.Key ] as ITreeAttribute )[ skill.Key ] as ITreeAttribute ).SetFloat( "expsecondary", skill.Value.expsecondary_ );
+        ( ( watchedExp_[ category.Key ] as ITreeAttribute )[ skill.Key ] as ITreeAttribute ).SetFloat( "expmisc",      skill.Value.expmisc_ );
+
+        // Now set max
+        ( ( watchedExp_[ category.Key ] as ITreeAttribute )[ skill.Key ] as ITreeAttribute ).SetFloat( "max",          skill.Value.max_ );
+        ( ( watchedExp_[ category.Key ] as ITreeAttribute )[ skill.Key ] as ITreeAttribute ).SetFloat( "maxsecondary", skill.Value.maxsecondary_ );
+        ( ( watchedExp_[ category.Key ] as ITreeAttribute )[ skill.Key ] as ITreeAttribute ).SetFloat( "maxmisc",      skill.Value.maxmisc_ );
+
+      }
+    }
+
+  }
+
   // I think typeAttributes is the rest of the json that can be packed with a behavior
   public override void Initialize( EntityProperties properties, JsonObject typeAttributes )
   {
-    skillTree_ = entity.WatchedAttributes.GetTreeAttribute( BEHAVIOR );
-    api_       = entity.World.Api;
+    watchedExp_ = entity.WatchedAttributes.GetTreeAttribute( BEHAVIOR );
+    api_        = entity.World.Api;
 
     skills_    = new Dictionary<string, Dictionary<string, Skill>>();
+    skillTree_ = new TreeAttribute();
 
-    if ( skillTree_ == null )
+    // Start pulling out all the info
+    parseSkills( typeAttributes );
+
+    if ( watchedExp_ == null )
     {
 
-      entity.WatchedAttributes.SetAttribute( BEHAVIOR, skillTree_ = new TreeAttribute() );
-
-      // Start pulling out all the info
-      parseSkills( typeAttributes );
+      entity.WatchedAttributes.SetAttribute( BEHAVIOR, watchedExp_ = new TreeAttribute() );      
     
     }
-    else
-    {
-      // Load up our skills from the WatchedAttributes
-      loadSkills( );
-    }
+    // Load up our experience from the WatchedAttributes and from any new skills
+    syncSkillsExp( );
 
     // FOR TESTING PURPOSES
     // listenerId = entity.World.RegisterGameTickListener( testUpdate, 5000 );
