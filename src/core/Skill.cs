@@ -134,7 +134,63 @@ public class Skill
       case SkillPoint.SECONDARY : return this.secondary_;
       case SkillPoint.MISC      : return this.misc_;
       default                   : return 0.0f;
-    }  
+    }
+  }
+
+  public bool addPointValue( string pointType )
+  {
+    SkillPoint point;
+    bool parsed = System.Enum.TryParse( pointType, out point );
+    if ( parsed )
+    {
+      return addPointValue( point );
+    }
+    else
+    { 
+      return false;
+    }
+  }
+
+  public bool addPointValue( SkillPoint pointType )
+  {
+  
+    float pointAdd = getPointValue( pointType );
+    if ( pointAdd == 0.0f ) return false;
+
+    switch ( pointType )
+    {
+      case SkillPoint.PRIMARY   :
+      {
+        expprimary_ += pointAdd;
+        break;
+      }
+      case SkillPoint.SECONDARY :
+      {
+        expsecondary_ = System.Math.Min( maxsecondary_, expsecondary_ + pointAdd );
+        if ( expsecondary_ == maxsecondary_ )
+        {
+          System.Console.WriteLine( VSMastery.MODLOG + "Max secondary experience reached for : " + skillname_ );
+        }
+        break;
+      }
+      case SkillPoint.MISC      :
+      {
+        expmisc_ = System.Math.Min( maxmisc_, expmisc_ + pointAdd );
+        if ( expmisc_ == maxmisc_ )
+        {
+          System.Console.WriteLine( VSMastery.MODLOG + "Max misc experience reached for : " + skillname_ );
+        }
+        break;
+      }
+      default                   :
+      {
+        // Shouldn't get here but will check anyways
+        return false;
+      }
+    }
+
+    return true;
+
   }
 
   private float hyperbolic( float x )
