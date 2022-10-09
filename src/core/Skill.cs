@@ -19,7 +19,7 @@ public class Skill
   }
 
 
-  public float exp  { get { return System.Math.Max( max_, exp_ + expprimary_ + expsecondary_ + expmisc_ ); } }
+  public float exp  { get { return System.Math.Min( max_, exp_ + expprimary_ + expsecondary_ + expmisc_ ); } }
 
 
   public float exp_          =     0.0f;

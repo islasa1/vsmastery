@@ -200,13 +200,16 @@ public class GuiMastery : GuiDialog
         {
 
           ITreeAttribute skill = skillValue.Value as ITreeAttribute;
-
-          Composers["main"].GetStatbar( skillValue.Key ).SetLineInterval( skill.GetFloat( "max" ) / 10 );
+          float max = skill.GetFloat( "max" );
+          float exp = skill.GetFloat( "exp" ) + skill.GetFloat( "expprimary" ) + skill.GetFloat( "expsecondary" ) + skill.GetFloat( "expmisc" );
+          Composers["main"].GetStatbar( skillValue.Key ).SetLineInterval( max / 10 );
           Composers["main"].GetStatbar( skillValue.Key ).SetValues      ( 
-                                                                          skill.GetFloat( "exp" )          + skill.GetFloat( "expprimary" ) +
-                                                                          skill.GetFloat( "expsecondary" ) + skill.GetFloat( "expmisc" ),
+                                                                          System.Math.Min(
+                                                                                          max,
+                                                                                          exp
+                                                                                          ),
                                                                           0,
-                                                                          skill.GetFloat( "max" )
+                                                                          max
                                                                           );
         }
       }
