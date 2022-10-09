@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+
+using Vintagestory.API.Common;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 
@@ -32,6 +36,8 @@ public class Skill
   public float secondary_  =     2.5f;
   public float misc_       =     1.0f;
 
+  public List< SkillEvent > events_;
+
   // Might not be used here
   // public static float LEVEL_STEP = 1.0 / 7.0;
 
@@ -49,6 +55,7 @@ public class Skill
   public Skill( string skillname, ITreeAttribute skillAttributes, Skill defaultSkill )
   {
     this.skillname_ = skillname;
+    this.events_    = new List< SkillEvent >();
     this.readFromTree( skillAttributes, defaultSkill );
   }
 
@@ -76,12 +83,32 @@ public class Skill
       this.factor_.readFromTree( factorTree, defaultSkill.factor_ );
     }
 
-    ITreeAttribute pointsTree = skillAttributes.GetTreeAttribute( "points" );
-    if ( pointsTree != null )
+    TreeArrayAttribute events = skillAttributes[ "events" ] as TreeArrayAttribute;
+    if ( events != null )
     {
-      
+      SkillEvent defaultEvent = new SkillEvent();
+
+      foreach ( TreeAttribute skillEvent in events.value )
+      {
+        events_.Add( new SkillEvent( skillEvent, defaultEvent ) );
+      }
+    }
+    else 
+    {
+      System.Console.WriteLine( "{0}Skill {1} has no events to accumulate experience", VSMastery.MODLOG, skillname_ );
     }
 
+  }
+
+  public float getExpValue( SkillPoint pointType )
+  {
+    switch ( pointType )
+    {
+      case SkillPoint.PRIMARY   : return this.expprimary_;
+      case SkillPoint.SECONDARY : return this.expsecondary_;
+      case SkillPoint.MISC      : return this.expmisc_;
+      default                   : return 0.0f;
+    }
   }
 
   public float getPointValue( string pointType )
