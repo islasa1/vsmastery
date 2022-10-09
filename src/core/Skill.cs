@@ -247,6 +247,21 @@ public class Skill
     return skillTree;
 
   }
+
+  // Propagate events through all our events
+  public List< SkillPoint > triggerEvent( SkillEvent.Event eventType, EnumTool? tool, string toolname, object data )
+  {
+    List< SkillPoint > points = new List< SkillPoint >();
+    foreach( SkillEvent ev in events_.Where( ( SkillEvent ev ) => { return ev.event_ == eventType; } ) )
+    {
+      if ( ev.eventTriggered( tool, toolname, data ) )
+      {
+        points.Add( ev.pointType_ );
+      }
+    }
+
+    return points;
+  }
   
 
 }
