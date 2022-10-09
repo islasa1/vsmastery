@@ -28,18 +28,18 @@ public class GuiMastery : GuiDialog
     composeSkillsGui();
 
     // How often we update the info
-    capi.Event.RegisterGameTickListener( On2sTick, 2000 );
+    // capi.Event.RegisterGameTickListener( On2sTick, 2000 );
   }
 
   
-  private void On2sTick( float dt )
-  {
-    if ( IsOpened() )
-    {
-      // I believe the watched attributes should take care of this
-      // UpdateStatBars();
-    }
-  }
+  // private void On2sTick( float dt )
+  // {
+  //   if ( IsOpened() )
+  //   {
+  //     // I believe the watched attributes should take care of this
+  //     // UpdateStatBars();
+  //   }
+  // }
 
   private void onClosed()
   {
@@ -49,8 +49,11 @@ public class GuiMastery : GuiDialog
 
   private void onOpened()
   {
-    // Re-fresh our dynamic text
+    // Refresh our dynamic text
     clearSkillDesc();
+
+    // Refresh our stats
+    UpdateStatBars();
 
     // Watch our stats grow/shrink
     capi.World.Player.Entity.WatchedAttributes.RegisterModifiedListener( BehaviorSkills.BEHAVIOR, UpdateStatBars );
@@ -93,7 +96,7 @@ public class GuiMastery : GuiDialog
     //
     // Start to get our values
     //
-    ITreeAttribute vsmastery = capi.World.Player.Entity.WatchedAttributes.GetTreeAttribute("vsmasteryskills");
+    ITreeAttribute vsmastery = capi.World.Player.Entity.WatchedAttributes.GetTreeAttribute( BehaviorSkills.BEHAVIOR );
 
     if ( vsmastery != null )
     {
@@ -188,7 +191,7 @@ public class GuiMastery : GuiDialog
     GuiComposer compo = Composers["main"];
     if ( compo == null ) return;
 
-    ITreeAttribute vsmastery = capi.World.Player.Entity.WatchedAttributes.GetTreeAttribute("vsmasteryskills");
+    ITreeAttribute vsmastery = capi.World.Player.Entity.WatchedAttributes.GetTreeAttribute( BehaviorSkills.BEHAVIOR );
     if ( vsmastery != null )
     {
       // Because we flattened to not include defaults anymore we go straight to categories
