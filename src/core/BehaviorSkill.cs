@@ -110,6 +110,16 @@ public class BehaviorSkills : EntityBehavior
           
           // Add it to the category
           skills_[ category.Key ].Add( sk.skillname_, sk );
+
+          // Add it to the event registry
+          foreach( SkillEvent ev in skills_[ category.Key ][ sk.skillname_ ].events_ )
+          {
+            Tuple< string, string > catSkill = new Tuple<string, string>( category.Key, sk.skillname_ );
+            if ( !eventRegistry_[ ev.event_ ].Contains( catSkill ) )
+            {
+              eventRegistry_[ ev.event_ ].Add( catSkill );
+            }
+          }
         }
 
       }
