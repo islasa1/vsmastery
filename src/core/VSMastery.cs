@@ -1,6 +1,7 @@
 using Vintagestory.API.Client;
 using Vintagestory.API.Server;
 using Vintagestory.API.Common;
+using HarmonyLib;
 
 [assembly: ModInfo( "vsmastery",
 	Description = "TBD",
@@ -22,6 +23,8 @@ public class VSMastery : Vintagestory.API.Common.ModSystem
 
   // The core API
   Vintagestory.API.Common.ICoreAPI       api_;
+
+  Harmony                                harmony_;
 
   public static string MOD_ID = "vsmastery";
   public static string MODLOG = "[VSMASTERY] ";
@@ -47,6 +50,12 @@ public class VSMastery : Vintagestory.API.Common.ModSystem
   public override void StartServerSide( ICoreServerAPI api )
   {
     sapi_ = api;
+
+    // Start harmony
+    harmony_ = new Harmony( VSMastery.MOD_ID );
+    System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+    harmony_.PatchAll( assembly );
+    
   }
 
 
