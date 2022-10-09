@@ -321,44 +321,50 @@ public class BehaviorSkills : EntityBehavior
 
   public override void Notify( string key, object data )
   {
+    // Route custom notifications to appropriate events
     if ( key == GridRecipePatch.NOTIFY_KEY && data is GridRecipe )
     {
       System.Console.WriteLine( VSMastery.MODLOG + "Recipe crafted!" );
+    }
+    else if ( key == BlockBehaviorBreakIfFloatingPatch.NOTIFY_KEY && data is ItemStack )
+    {
+      System.Console.WriteLine( VSMastery.MODLOG + "Stone relieved!" );
+
+      // Get thing that broke it
+      ItemStack currentItem = ( entity as EntityPlayer ).RightHandItemSlot.Itemstack;
+      string    toolname    = currentItem.Collectible.Attributes?["slotRefillIdentifier"]?.ToString();
+
+      experienceEvent( 
+                      SkillEvent.Event.BREAK, 
+                      currentItem.Collectible.Tool,
+                      toolname,
+                      data 
+                      );
     }
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // CORE BEHAVIOR 
 
-  public void distributePoints( 
-                                string   sourceEvent, 
-                                EnumTool tool, 
-                                string   toolname
+  public void experienceEvent( 
+                                SkillEvent.Event sourceEvent, 
+                                EnumTool?        tool, 
+                                string           toolname,
+                                object           data
                                 )
   {
-    
+    List< Tuple< string, string > > events = eventRegistry_[ sourceEvent ];
+
+    foreach( Tuple< string, string > skill in events )
+    {
+      List< Skill.SkillPoint > points = skills_[ skill.Item1 ][ skill.Item2 ].triggerEvent( sourceEvent, tool, toolname, data );
+      if ( points.Count > 0 )
+      {
+        // Add the points to the skill
+        points.ForEach( ( Skill.SkillPoint point ) => { this.addSkillPoint( skill.Item1, skill.Item2, point ); } );
+      }
+    }
   }
-
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ///
-  /// MINING
-  ///
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ///
-  /// METALSMITHING
-  ///
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ///
-  /// COMBAT
-  ///
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
   
 
   private void testUpdate( float dt )
