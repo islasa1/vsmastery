@@ -40,10 +40,12 @@
               "var"     : 4.0,
               "dist" : "narrowgaussian"
             },
-            "points" :
-            {
-              "craft|forge|attack|kill|interact|break" : { "valid" : [ "itemname", "blockname" ], "type" : "pointType" }
-            }
+            "events" :
+            [
+              { "event" : "break", "pointType" : "primary",   "valid" : [ "game:rock-*" ] },
+              { "event" : "break", "pointType" : "secondary", "valid" : [ "game:rock-stone-*" ] },
+              { "event" : "craft", "pointType" : "misc",      "valid" : [ "game:pickaxe" ] } 
+            ]
           },
           "oreminer" : 
           { 
