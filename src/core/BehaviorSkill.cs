@@ -49,34 +49,18 @@ public class BehaviorSkills : EntityBehavior
       
       if ( skillAttributes != null )
       {
-        System.Console.WriteLine( VSMastery.MODLOG + "Skill found and added point " + pointType.ToString() );
-
-        // By time we call this a skill should be fully defined
-        float? cap = null;
-        if ( ( pointType == Skill.SkillPoint.SECONDARY ) || ( pointType == Skill.SkillPoint.MISC ) )
-        {
-          cap = skillAttributes.GetFloat( "max" + pointType.ToString().ToLower() );
-        }
-
+        
         // Pull directly from skills_ in this case
-        float points    = skills_[ category ][ skill ].getPointValue( pointType );
+        bool update = skills_[ category ][ skill ].addPointValue( pointType );
 
-        // Source original exp to get new
-        float updateExp = skillAttributes.GetFloat( "exp" + pointType.ToString().ToLower() ) + points;
-
-        if ( cap != null )
+        if ( update )
         {
-          updateExp = System.Math.Max( (float)cap, updateExp );
-          if ( updateExp == cap )
-          {
-            System.Console.WriteLine( VSMastery.MODLOG + "Max experience reached for : " + skill );
-          }
+          System.Console.WriteLine( "{0}{1}::{2} skill found and added point {3}", VSMastery.MODLOG, category, skill, pointType.ToString() );
+
+          // Set the experience to the watched exp
+          skillAttributes.SetFloat( "exp" + pointType.ToString().ToLower(), skills_[ category ][ skill ].getExpValue( pointType ) );
+          
         }
-
-        // Check final exp?
-
-        // Set the experience to the watched exp
-        skillAttributes.SetFloat( "exp" + pointType.ToString().ToLower(), updateExp );
 
         entity.WatchedAttributes.MarkPathDirty( BEHAVIOR );
       }
