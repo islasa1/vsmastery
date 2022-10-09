@@ -11,7 +11,7 @@ class GridRecipePatch
   public static string NOTIFY_KEY = "GridRecipe::ConsumeInput";
 
   [HarmonyPostfix]
-  private static void PostFixConsumeInput( IPlayer byPlayer, bool __result, GridRecipe __instance )
+  private static void PostFix( IPlayer byPlayer, bool __result, GridRecipe __instance )
   {
     // Only do postfix if we got a good recipe
     if ( __result )
