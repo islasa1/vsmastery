@@ -1,5 +1,7 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
+using System.Collections.Generic;
+
 using Vintagestory.API.Server;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -20,7 +22,8 @@ public class BehaviorSkills : EntityBehavior
   //    skills_    is synchronized to the two and for ease of calculations
   ITreeAttribute watchedExp_;
   ITreeAttribute skillTree_;
-  Dictionary< string, Dictionary<  string, Skill > > skills_;
+  Dictionary< string, Dictionary<  string, Skill > >              skills_;
+  Dictionary< SkillEvent.Event, List< Tuple< string, string > > > eventRegistry_;
 
   ICoreAPI       api_;
   public static string  BEHAVIOR = "vsmasteryskills";
@@ -228,6 +231,11 @@ public class BehaviorSkills : EntityBehavior
 
     skills_    = new Dictionary<string, Dictionary<string, Skill>>();
     skillTree_ = new TreeAttribute();
+
+    // Probably could be a hashset but for now just use this
+    // pre-make event registry for each type of event
+    eventRegistry_ = SkillEvent.ALL_EVENTS.Select( ( ev ) => new { key = ev, value = new List< Tuple< string, string > >() } )
+                                          .ToDictionary( obj => obj.key, obj => obj.value );
 
     // Start pulling out all the info
     parseSkills( typeAttributes );
